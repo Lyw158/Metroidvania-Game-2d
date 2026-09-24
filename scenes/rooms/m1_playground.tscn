@@ -1,0 +1,283 @@
+[gd_scene format=3 uid="uid://dgi7upxcjljoe"]
+
+[ext_resource type="Script" uid="uid://c4lbw1ptyl85c" path="res://scenes/rooms/m1_playground.gd" id="1_room"]
+[ext_resource type="PackedScene" uid="uid://blt15je6hypdt" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/ability_pickup.tscn" id="3_pickup"]
+
+[sub_resource type="RectangleShape2D" id="Shape_LeftWall"]
+size = Vector2(60, 1728)
+
+[sub_resource type="RectangleShape2D" id="Shape_RightWall"]
+size = Vector2(60, 1728)
+
+[sub_resource type="RectangleShape2D" id="Shape_GroundA"]
+size = Vector2(1100, 228)
+
+[sub_resource type="RectangleShape2D" id="Shape_PitFloor"]
+size = Vector2(400, 28)
+
+[sub_resource type="RectangleShape2D" id="Shape_GroundB"]
+size = Vector2(2280, 228)
+
+[sub_resource type="RectangleShape2D" id="Shape_Step1"]
+size = Vector2(150, 200)
+
+[sub_resource type="RectangleShape2D" id="Shape_Step2"]
+size = Vector2(150, 400)
+
+[sub_resource type="RectangleShape2D" id="Shape_Tower1"]
+size = Vector2(200, 250)
+
+[sub_resource type="RectangleShape2D" id="Shape_Tower2"]
+size = Vector2(200, 400)
+
+[sub_resource type="RectangleShape2D" id="Shape_Tower3"]
+size = Vector2(150, 500)
+
+[sub_resource type="RectangleShape2D" id="Shape_Pillar1"]
+size = Vector2(120, 100)
+
+[sub_resource type="RectangleShape2D" id="Shape_Pillar2"]
+size = Vector2(120, 150)
+
+[sub_resource type="RectangleShape2D" id="Shape_Pillar3"]
+size = Vector2(120, 100)
+
+[sub_resource type="RectangleShape2D" id="Shape_OneWayA"]
+size = Vector2(350, 60)
+
+[sub_resource type="RectangleShape2D" id="Shape_OneWayB"]
+size = Vector2(320, 60)
+
+[sub_resource type="RectangleShape2D" id="Shape_OneWayC"]
+size = Vector2(300, 60)
+
+[sub_resource type="RectangleShape2D" id="Shape_M2Perch"]
+size = Vector2(350, 80)
+
+[node name="M1Playground" type="Node2D" unique_id=1743129684]
+script = ExtResource("1_room")
+
+[node name="Background" type="ColorRect" parent="." unique_id=904818343]
+offset_right = 3840.0
+offset_bottom = 1728.0
+color = Color(0.118, 0.129, 0.161, 1)
+
+[node name="Geometry" type="Node2D" parent="." unique_id=1662850505]
+
+[node name="Block_LeftWall" type="StaticBody2D" parent="Geometry" unique_id=1075724505]
+position = Vector2(30, 864)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_LeftWall" unique_id=340869831]
+shape = SubResource("Shape_LeftWall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_LeftWall" unique_id=1779267530]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-30, -864, 30, -864, 30, 864, -30, 864)
+
+[node name="Block_RightWall" type="StaticBody2D" parent="Geometry" unique_id=247640323]
+position = Vector2(3810, 864)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_RightWall" unique_id=1467069818]
+shape = SubResource("Shape_RightWall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_RightWall" unique_id=659408538]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-30, -864, 30, -864, 30, 864, -30, 864)
+
+[node name="Block_GroundA" type="StaticBody2D" parent="Geometry" unique_id=553429131]
+position = Vector2(550, 1614)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_GroundA" unique_id=158776765]
+shape = SubResource("Shape_GroundA")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_GroundA" unique_id=503103727]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-550, -114, 550, -114, 550, 114, -550, 114)
+
+[node name="Block_PitFloor" type="StaticBody2D" parent="Geometry" unique_id=622946299]
+position = Vector2(1300, 1714)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_PitFloor" unique_id=1402906345]
+shape = SubResource("Shape_PitFloor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_PitFloor" unique_id=2059556302]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-200, -14, 200, -14, 200, 14, -200, 14)
+
+[node name="Block_GroundB" type="StaticBody2D" parent="Geometry" unique_id=108437880]
+position = Vector2(2640, 1614)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_GroundB" unique_id=2041875261]
+shape = SubResource("Shape_GroundB")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_GroundB" unique_id=422401937]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-1140, -114, 1140, -114, 1140, 114, -1140, 114)
+
+[node name="Block_Step1" type="StaticBody2D" parent="Geometry" unique_id=1088666638]
+position = Vector2(775, 1400)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Step1" unique_id=1118548486]
+shape = SubResource("Shape_Step1")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Step1" unique_id=2003662265]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-75, -100, 75, -100, 75, 100, -75, 100)
+
+[node name="Block_Step2" type="StaticBody2D" parent="Geometry" unique_id=1866071246]
+position = Vector2(975, 1300)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Step2" unique_id=1863019326]
+shape = SubResource("Shape_Step2")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Step2" unique_id=1080528356]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-75, -200, 75, -200, 75, 200, -75, 200)
+
+[node name="Block_Tower1" type="StaticBody2D" parent="Geometry" unique_id=570512613]
+position = Vector2(1700, 1375)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Tower1" unique_id=1590507961]
+shape = SubResource("Shape_Tower1")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Tower1" unique_id=51965756]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-100, -125, 100, -125, 100, 125, -100, 125)
+
+[node name="Block_Tower2" type="StaticBody2D" parent="Geometry" unique_id=1076581010]
+position = Vector2(2050, 1300)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Tower2" unique_id=107980411]
+shape = SubResource("Shape_Tower2")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Tower2" unique_id=1265379183]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-100, -200, 100, -200, 100, 200, -100, 200)
+
+[node name="Block_Tower3" type="StaticBody2D" parent="Geometry" unique_id=633468310]
+position = Vector2(2375, 1250)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Tower3" unique_id=1541033938]
+shape = SubResource("Shape_Tower3")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Tower3" unique_id=1256988748]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-75, -250, 75, -250, 75, 250, -75, 250)
+
+[node name="Block_Pillar1" type="StaticBody2D" parent="Geometry" unique_id=1661824969]
+position = Vector2(2660, 1450)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Pillar1" unique_id=75043280]
+shape = SubResource("Shape_Pillar1")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Pillar1" unique_id=1187426592]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-60, -50, 60, -50, 60, 50, -60, 50)
+
+[node name="Block_Pillar2" type="StaticBody2D" parent="Geometry" unique_id=446815849]
+position = Vector2(2880, 1425)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Pillar2" unique_id=789242654]
+shape = SubResource("Shape_Pillar2")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Pillar2" unique_id=170733179]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-60, -75, 60, -75, 60, 75, -60, 75)
+
+[node name="Block_Pillar3" type="StaticBody2D" parent="Geometry" unique_id=1660969002]
+position = Vector2(3100, 1450)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Block_Pillar3" unique_id=251792290]
+shape = SubResource("Shape_Pillar3")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/Block_Pillar3" unique_id=1404234023]
+color = Color(0.23, 0.25, 0.31, 1)
+polygon = PackedVector2Array(-60, -50, 60, -50, 60, 50, -60, 50)
+
+[node name="OneWay_A" type="StaticBody2D" parent="Geometry" unique_id=1323652929]
+position = Vector2(3475, 1280)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/OneWay_A" unique_id=651005759]
+shape = SubResource("Shape_OneWayA")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/OneWay_A" unique_id=1138754914]
+color = Color(0.85, 0.63, 0.23, 1)
+polygon = PackedVector2Array(-175, -30, 175, -30, 175, 30, -175, 30)
+
+[node name="OneWay_B" type="StaticBody2D" parent="Geometry" unique_id=1610896594]
+position = Vector2(3590, 1080)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/OneWay_B" unique_id=1196686681]
+shape = SubResource("Shape_OneWayB")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/OneWay_B" unique_id=321626821]
+color = Color(0.85, 0.63, 0.23, 1)
+polygon = PackedVector2Array(-160, -30, 160, -30, 160, 30, -160, 30)
+
+[node name="OneWay_C" type="StaticBody2D" parent="Geometry" unique_id=356232132]
+position = Vector2(3400, 880)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/OneWay_C" unique_id=1085387821]
+shape = SubResource("Shape_OneWayC")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/OneWay_C" unique_id=256736745]
+color = Color(0.85, 0.63, 0.23, 1)
+polygon = PackedVector2Array(-150, -30, 150, -30, 150, 30, -150, 30)
+
+[node name="Hint" type="Label" parent="." unique_id=1774431446]
+offset_left = 110.0
+offset_top = 1030.0
+offset_right = 1750.0
+offset_bottom = 1230.0
+theme_override_font_sizes/font_size = 36
+text = "移动 A/D    跳跃 空格（短按矮跳，长按高跳）    下穿单向平台 按住 S + 空格
+右侧土黄色薄板是单向平台：可从下方跳穿、站上去，再按 S + 空格 落下
+
+M2 二段跳测试区（右侧单向平台塔）：
+塔顶左侧的青色光球：碰到即解锁「二段跳」
+右上高台只有二段跳才上得去；解锁后在空中再按一次 空格 追加跳跃
+F1 键：切换二段跳解锁状态（调试对比用）"
+metadata/_edit_group_ = true
+
+[node name="M2Area" type="Node2D" parent="." unique_id=1916154091]
+
+[node name="Block_M2Perch" type="StaticBody2D" parent="M2Area" unique_id=928118436]
+position = Vector2(3575, 480)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="M2Area/Block_M2Perch" unique_id=1722239160]
+shape = SubResource("Shape_M2Perch")
+
+[node name="Polygon2D" type="Polygon2D" parent="M2Area/Block_M2Perch" unique_id=1277289327]
+color = Color(0.28, 0.34, 0.44, 1)
+polygon = PackedVector2Array(-175, -40, 175, -40, 175, 40, -175, 40)
+
+[node name="AbilityPickup" parent="M2Area" unique_id=1719680899 instance=ExtResource("3_pickup")]
+position = Vector2(3300, 660)
+pickup_uid = &"m1_double_jump"
+
+[node name="Player" parent="." unique_id=2035754362 instance=ExtResource("2_player")]
+position = Vector2(120, 1360)
