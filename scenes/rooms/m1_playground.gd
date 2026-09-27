@@ -1,13 +1,5 @@
-extends Node2D
-## M1 测试场：长跑区 / 阶梯 / 断崖 / 跳跃高度塔 / 窄柱 / 单向平台塔
-## 相机可移动边界由房间定义并注入玩家相机（M3 房间系统接管前，先用这个最小方案）
-
-@export var camera_bounds := Rect2(0, 0, 3840, 1728)
-
-
-func _ready() -> void:
-	var cam: Camera2D = $Player/Camera2D
-	cam.limit_left = int(camera_bounds.position.x)
-	cam.limit_top = int(camera_bounds.position.y)
-	cam.limit_right = int(camera_bounds.end.x)
-	cam.limit_bottom = int(camera_bounds.end.y)
+extends Room
+## M3：m1_playground 作为「出生房 + 障碍房 A」。
+## 出生点（Default / FromAbilityRoom / FromFinishRoom）与相机边界由 Room 基类统一处理；
+## 门禁：高台上的出口门单跳够不到，需要在能力房获得二段跳后才能上去。
+## 门与出口见场景中 M3Doors 分组（scenes/interactables/room_door.tscn 实例）。

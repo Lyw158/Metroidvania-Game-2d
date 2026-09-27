@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://bu3mpg4bxsyhb"
 SaveManager="*uid://dlvpedxvlaoev"
+RoomManager="*res://scripts/autoload/room_manager.gd"
 
 [display]
 

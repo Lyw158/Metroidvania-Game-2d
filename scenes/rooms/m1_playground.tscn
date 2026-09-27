@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c4lbw1ptyl85c" path="res://scenes/rooms/m1_playground.gd" id="1_room"]
 [ext_resource type="PackedScene" uid="uid://blt15je6hypdt" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://scenes/interactables/ability_pickup.tscn" id="3_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/room_door.tscn" id="3_door"]
 
 [sub_resource type="RectangleShape2D" id="Shape_LeftWall"]
 size = Vector2(60, 1728)
@@ -248,25 +248,23 @@ color = Color(0.85, 0.63, 0.23, 1)
 polygon = PackedVector2Array(-150, -30, 150, -30, 150, 30, -150, 30)
 
 [node name="Hint" type="Label" parent="." unique_id=1774431446]
-offset_left = 110.0
-offset_top = 1030.0
-offset_right = 1750.0
-offset_bottom = 1230.0
+offset_left = 86.0
+offset_top = 761.0
+offset_right = 1726.0
+offset_bottom = 1076.0
 theme_override_font_sizes/font_size = 36
 text = "移动 A/D    跳跃 空格（短按矮跳，长按高跳）    下穿单向平台 按住 S + 空格
 右侧土黄色薄板是单向平台：可从下方跳穿、站上去，再按 S + 空格 落下
-
-M2 二段跳测试区（右侧单向平台塔）：
-塔顶左侧的青色光球：碰到即解锁「二段跳」
-右上高台只有二段跳才上得去；解锁后在空中再按一次 空格 追加跳跃
+M3 验证流程：右下角绿色门 → 能力房（爬平台拿「二段跳」）→ 走回入口门 → 回出生房
+然后爬单向平台塔 → 从塔顶向左二段跳上高台 → 高台上的出口门 → 终点房
 F1 键：切换二段跳解锁状态（调试对比用）"
-metadata/_edit_group_ = true
 
 [node name="M2Area" type="Node2D" parent="." unique_id=1916154091]
 
 [node name="Block_M2Perch" type="StaticBody2D" parent="M2Area" unique_id=928118436]
-position = Vector2(3575, 480)
+position = Vector2(2877, 367)
 collision_mask = 0
+metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="M2Area/Block_M2Perch" unique_id=1722239160]
 shape = SubResource("Shape_M2Perch")
@@ -274,10 +272,32 @@ shape = SubResource("Shape_M2Perch")
 [node name="Polygon2D" type="Polygon2D" parent="M2Area/Block_M2Perch" unique_id=1277289327]
 color = Color(0.28, 0.34, 0.44, 1)
 polygon = PackedVector2Array(-175, -40, 175, -40, 175, 40, -175, 40)
+metadata/_edit_group_ = true
 
-[node name="AbilityPickup" parent="M2Area" unique_id=1719680899 instance=ExtResource("3_pickup")]
-position = Vector2(3300, 660)
-pickup_uid = &"m1_double_jump"
+[node name="M3Doors" type="Node2D" parent="." unique_id=1562448537]
+
+[node name="Door_ToAbilityRoom" parent="M3Doors" unique_id=1080577753 instance=ExtResource("3_door")]
+position = Vector2(3720, 1350)
+target_room_path = "res://scenes/rooms/m3_ability_room.tscn"
+target_spawn = &"FromBirthRoom"
+
+[node name="Door_ToFinalRoom" parent="M3Doors" unique_id=30879854 instance=ExtResource("3_door")]
+position = Vector2(3000, 240)
+target_room_path = "res://scenes/rooms/m3_final_room.tscn"
+target_spawn = &"FromPerch"
+door_size = Vector2(120, 240)
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=845804974]
+
+[node name="Default" type="Marker2D" parent="SpawnPoints" unique_id=1347140626]
+position = Vector2(120, 1360)
+
+[node name="FromAbilityRoom" type="Marker2D" parent="SpawnPoints" unique_id=1806622651]
+position = Vector2(3480, 1400)
+
+[node name="FromFinishRoom" type="Marker2D" parent="SpawnPoints" unique_id=1339572302]
+position = Vector2(2820, 268)
 
 [node name="Player" parent="." unique_id=2035754362 instance=ExtResource("2_player")]
-position = Vector2(120, 1360)
+position = Vector2(134, 1426)
+metadata/_edit_group_ = true
