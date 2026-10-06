@@ -34,6 +34,10 @@ func is_pickup_collected(uid: StringName) -> bool:
 	return _pickup_records.has(uid)
 
 
+func get_recorded_pickups() -> Array:
+	return _pickup_records.keys()
+
+
 ## 清空所有记录（新游戏 / 调试用；M4 接入存档后配合读档调用）
 func reset_records() -> void:
 	_ability_records.clear()

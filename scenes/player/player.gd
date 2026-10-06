@@ -2,18 +2,25 @@ class_name Player
 extends CharacterBody2D
 ## M1 玩家控制器：水平移动 / 跳跃 / 手感辅助 / 状态机 / 动画 / 摄像机前瞻。
 ##
-## 素材锚点规范（M6 替换素材时依赖，务必保持）：
-## - 动画帧画布 256×320，角色视觉高约 260px，水平居中（中轴 x=128）
-## - 脚底统一落在画布 y=300（相对节点原点 +140px），碰撞盒底部与之对齐
-## - 替换正式素材后：AnimatedSprite2D 的 scale 恢复为 1、offset 恢复为 (0, 0)
+## 素材锚点规范（M6 替换素材时依赖，务必保持；小角色路线，以下数值为用户设定）：
+## - 帧画布 80×110（scenes/player/frames/ 动作包），已接动画：idle(3帧)/run(2帧)/jump(1帧)/fall(1帧)
+## - AnimatedSprite2D：scale (0.971, 1)、offset (0, 4.3)，替换素材时保持不动
+## - 碰撞盒 49×86、中心 (1.5, 16)，对齐原则：图底部 ≈ 碰撞盒底部
 ##
 ## 状态机说明：验证期用 enum 四态（Idle/Run/Jump/Fall）足够；
 ## 后续（M5 战斗）如需扩展，再评估节点式状态机。
 ##
 ## 能力系统（M2）：解锁状态存放在子节点 PlayerAbilities（player_abilities.gd）；
 ## 本脚本只负责查询能力并执行对应行为（当前仅二段跳）；F1 可切换二段跳状态用于对比调试。
+##
+## 生命与死亡（M4）：生命值最小实现（set_health / heal_full / health_changed），
+## 生命归零或调试键 F2 触发 die()，由 SaveManager.respawn_player() 回到存档点；
+## M5 战斗按同一接口扣血即可接入。死亡演出（变红）为占位，M6 再增强。
 
 enum State { IDLE, RUN, JUMP, FALL }
+
+## 生命变化广播（存档点回血 / M5 受伤 / M6 HUD 监听）
+signal health_changed(current: int, maximum: int)
 
 ## 单向平台所在物理层（对应 project.godot 中 layer 2 "OneWayPlatform"）
 const ONE_WAY_LAYER := 2
@@ -56,6 +63,10 @@ const ONE_WAY_LAYER := 2
 ## 空中最多可追加的跳跃次数（解锁二段跳后生效）
 @export var max_air_jumps := 1
 
+@export_group("生命（M4 最小实现，M5 战斗接入）")
+## 生命上限（M4 用于存档回血验证；受伤扣血与敌人伤害在 M5 接入）
+@export var max_health := 100
+
 @export_group("摄像机")
 ## 朝移动方向的前瞻偏移距离（px），0 为关闭
 @export var look_ahead_distance := 130.0
@@ -71,12 +82,15 @@ const ONE_WAY_LAYER := 2
 @onready var abilities: PlayerAbilities = $PlayerAbilities
 
 var state: State = State.IDLE
+## 当前生命值（_ready 时初始化为 max_health）
+var health := 0
 
 var _coyote_timer := 0.0
 var _jump_buffer_timer := 0.0
 var _drop_through_timer := 0.0
 var _air_jumps_used := 0
 var _debug_label: Label
+var _dead := false
 
 
 func _ready() -> void:
@@ -89,10 +103,15 @@ func _ready() -> void:
 		settings.outline_color = Color(0.0, 0.0, 0.0, 0.85)
 		_debug_label.label_settings = settings
 		add_child(_debug_label)
+	health = max_health
 	animated_sprite.play("idle")
 
 
 func _physics_process(delta: float) -> void:
+	if _dead:
+		# 死亡演出 / 重生过渡期间停止操作与物理
+		velocity = Vector2.ZERO
+		return
 	var direction := Input.get_axis("move_left", "move_right")
 	var jump_pressed := Input.is_action_just_pressed("jump")
 
@@ -238,10 +257,12 @@ func _update_camera_lookahead(direction: float, delta: float) -> void:
 func _update_debug() -> void:
 	if _debug_label == null:
 		return
-	_debug_label.text = "state: %s\nvel: (%.0f, %.0f)\ncoyote: %.2f  buffer: %.2f\ndouble_jump: %s  air_jumps: %d/%d" % [
+	_debug_label.text = "state: %s\nvel: (%.0f, %.0f)\nhealth: %d/%d\ncoyote: %.2f  buffer: %.2f\ndouble_jump: %s  air_jumps: %d/%d" % [
 		State.keys()[state],
 		velocity.x,
 		velocity.y,
+		health,
+		max_health,
 		_coyote_timer,
 		_jump_buffer_timer,
 		"ON" if abilities.has_ability(PlayerAbilities.DOUBLE_JUMP) else "OFF",
@@ -255,6 +276,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug_toggle_double_jump"):
 		var unlocked := abilities.toggle_ability(PlayerAbilities.DOUBLE_JUMP)
 		_show_toast("二段跳调试切换：" + ("已解锁" if unlocked else "已锁定"))
+	if event.is_action_pressed("debug_kill"):
+		die()
 
 
 ## 能力门面方法：供能力拾取物等外部对象调用（内部转发给 PlayerAbilities 节点）
@@ -264,6 +287,45 @@ func unlock_ability(id: StringName) -> bool:
 
 func has_ability(id: StringName) -> bool:
 	return abilities.has_ability(id)
+
+
+## ---- 生命与死亡（M4）----
+
+func is_dead() -> bool:
+	return _dead
+
+
+## 设置生命值（clamp 到 [0, max_health]；归零时触发死亡）
+func set_health(value: int) -> void:
+	var clamped := clampi(value, 0, max_health)
+	if clamped == health:
+		return
+	health = clamped
+	health_changed.emit(health, max_health)
+	if health == 0:
+		die()
+
+
+func heal(amount: int) -> void:
+	set_health(health + amount)
+
+
+## 回满生命（存档点休息使用）
+func heal_full() -> void:
+	set_health(max_health)
+
+
+## 死亡：简短表现后回到存档点（M5 战斗受伤归零时走同一入口）
+func die() -> void:
+	if _dead:
+		return
+	_dead = true
+	velocity = Vector2.ZERO
+	# 占位死亡表现：变红（M6 再增强特效 / 音效 / 死亡动画）
+	var tween := create_tween()
+	tween.tween_property(animated_sprite, "modulate", Color(1.0, 0.25, 0.25), 0.5)
+	await tween.finished
+	await SaveManager.respawn_player()
 
 
 ## 临时屏幕提示（上浮淡出）；M6 接入正式 UI 前的调试反馈

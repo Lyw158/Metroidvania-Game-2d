@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/interactables/save_point.gd" id="1_savepoint"]
+
+[sub_resource type="RectangleShape2D" id="Shape_InteractRange"]
+size = Vector2(340, 340)
+
+[node name="SavePoint" type="Area2D"]
+collision_layer = 128
+collision_mask = 4
+script = ExtResource("1_savepoint")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -120)
+shape = SubResource("Shape_InteractRange")
+
+[node name="Hint" type="Label" parent="."]
+offset_left = -280.0
+offset_top = -330.0
+offset_right = 280.0
+offset_bottom = -280.0
+horizontal_alignment = 1

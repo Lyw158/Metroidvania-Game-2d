@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c4lbw1ptyl85c" path="res://scenes/rooms/m1_playground.gd" id="1_room"]
 [ext_resource type="PackedScene" uid="uid://blt15je6hypdt" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/room_door.tscn" id="3_door"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/save_point.tscn" id="4_save_point"]
 
 [sub_resource type="RectangleShape2D" id="Shape_LeftWall"]
 size = Vector2(60, 1728)
@@ -257,7 +258,8 @@ text = "移动 A/D    跳跃 空格（短按矮跳，长按高跳）    下穿�
 右侧土黄色薄板是单向平台：可从下方跳穿、站上去，再按 S + 空格 落下
 M3 验证流程：右下角绿色门 → 能力房（爬平台拿「二段跳」）→ 走回入口门 → 回出生房
 然后爬单向平台塔 → 从塔顶向左二段跳上高台 → 高台上的出口门 → 终点房
-F1 键：切换二段跳解锁状态（调试对比用）"
+E 键：站在长椅旁存档（回满生命）——长椅在出生点右侧
+F1 键：切换二段跳解锁状态（调试对比用）    F2 键：模拟死亡 → 回到存档点重生"
 
 [node name="M2Area" type="Node2D" parent="." unique_id=1916154091]
 
@@ -286,6 +288,10 @@ position = Vector2(3000, 240)
 target_room_path = "res://scenes/rooms/m3_final_room.tscn"
 target_spawn = &"FromPerch"
 door_size = Vector2(120, 240)
+
+[node name="SavePoint_Home" parent="." instance=ExtResource("4_save_point")]
+position = Vector2(400, 1500)
+save_point_id = &"m1_home"
 
 [node name="SpawnPoints" type="Node2D" parent="." unique_id=845804974]
 

@@ -1,6 +1,7 @@
 class_name Room
 extends Node2D
 ## M3 房间基类：统一处理"跨房间出生点定位"与"相机边界注入"。
+## M4：进入房间时若存在存档恢复请求（启动读档 / 死亡重生），玩家直接放到存档位置。
 ## 房间场景结构约定：
 ## - Player：玩家实例（节点名必须为 Player）
 ## - SpawnPoints/<名字>：Marker2D 出生点集合（无跨房间进入时使用 default_spawn）
@@ -14,22 +15,31 @@ extends Node2D
 
 func _ready() -> void:
 	var spawn_name := RoomManager.consume_pending_spawn()
-	if spawn_name == &"":
-		spawn_name = default_spawn
-	_place_player(spawn_name)
+	if SaveManager.try_consume_restore(scene_file_path):
+		# M4 读档 / 死亡重生：直接回到存档位置（不经过出生点 Marker）
+		_place_player_at(SaveManager.get_saved_position())
+	else:
+		if spawn_name == &"":
+			spawn_name = default_spawn
+		_place_player(spawn_name)
 	_setup_camera()
 
 
 ## 把玩家放到指定出生点（找不到出生点时保留场景摆放位置并告警）
 func _place_player(spawn_name: StringName) -> void:
-	var player := get_node_or_null("Player") as CharacterBody2D
-	if player == null:
-		return
 	var marker := get_node_or_null("SpawnPoints/%s" % spawn_name) as Marker2D
 	if marker == null:
 		push_warning("Room '%s': spawn point '%s' not found" % [name, spawn_name])
 		return
-	player.global_position = marker.global_position
+	_place_player_at(marker.global_position)
+
+
+## 把玩家放到指定世界坐标，并清零速度（出生 / 读档 / 重生共用）
+func _place_player_at(target_position: Vector2) -> void:
+	var player := get_node_or_null("Player") as CharacterBody2D
+	if player == null:
+		return
+	player.global_position = target_position
 	player.velocity = Vector2.ZERO
 
 

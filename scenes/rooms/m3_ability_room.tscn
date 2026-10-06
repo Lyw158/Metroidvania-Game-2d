@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/room.gd" id="1_room"]
 [ext_resource type="PackedScene" uid="uid://blt15je6hypdt" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/ability_pickup.tscn" id="3_pickup"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/room_door.tscn" id="4_door"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/save_point.tscn" id="5_savepoint"]
 
 [sub_resource type="RectangleShape2D" id="Shape_Floor"]
 size = Vector2(1920, 140)
@@ -141,6 +142,10 @@ arrow_direction = Vector2(-1, 0)
 target_room_path = "res://scenes/rooms/m1_playground.tscn"
 target_spawn = &"FromAbilityRoom"
 
+[node name="SavePoint_Ability" parent="." instance=ExtResource("5_savepoint")]
+position = Vector2(280, 1260)
+save_point_id = &"m3_ability"
+
 [node name="SpawnPoints" type="Node2D" parent="."]
 
 [node name="FromBirthRoom" type="Marker2D" parent="SpawnPoints"]
@@ -150,10 +155,11 @@ position = Vector2(260, 1200)
 offset_left = 250.0
 offset_top = 900.0
 offset_right = 1500.0
-offset_bottom = 1040.0
+offset_bottom = 1060.0
 theme_override_font_sizes/font_size = 36
 text = "爬上台阶到顶层平台，拿走青色光球（获得「二段跳」）
-左下方的绿门可以回到出生房"
+左下方的绿门可以回到出生房
+左侧长椅：按 E 存档并回满生命（死亡后从此处重生）"
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(260, 1200)
